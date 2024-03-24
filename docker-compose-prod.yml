@@ -1,0 +1,20 @@
+version: "3"
+services:
+  api:
+    image: amari17/fastapi-blog
+    depends_on:
+      - postgres
+    ports:
+      - 80:8000
+    env_file:
+      - ./.env
+  
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=fastapi
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+volumes:
+  postgres-db:
