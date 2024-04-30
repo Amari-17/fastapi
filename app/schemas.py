@@ -28,10 +28,12 @@ class PostCreate(PostBase):
     pass
 
 
-class Post(BaseModel):
+class PostUpdate(PostBase):
+    owner_id: int
+
+
+class Post(PostBase):
     id: int
-    title: str
-    content: str
     owner_id: int
     owner: UserOut
 

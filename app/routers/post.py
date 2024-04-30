@@ -43,7 +43,7 @@ async def get_post(id: int,
 
 @router.post("/",  status_code=status.HTTP_201_CREATED,
              response_model=schemas.Post)
-async def create_post(post: schemas.PostCreate,
+async def create_post(post: schemas.PostBase,
                       db: Session = Depends(get_db),
                       current_user: int = Depends(oauth2.get_current_user)):
     new_post = models.Post(owner_id=current_user.id, **post.model_dump())
@@ -72,7 +72,7 @@ async def delete_post(id: int,
 
 @router.put("/{id}", status_code=status.HTTP_202_ACCEPTED,
             response_model=schemas.Post)
-async def update_post(id: int, post: schemas.PostCreate,
+async def update_post(id: int, updated_post: schemas.PostCreate,
                       db: Session = Depends(get_db),
                       current_user: int = Depends(oauth2.get_current_user)):
     post_query = db.query(models.Post).filter(models.Post.id == id)
@@ -80,10 +80,10 @@ async def update_post(id: int, post: schemas.PostCreate,
     if db_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post with ID:{id} was not found.")
-    if post.owner_id != current_user.id:
+    if db_post.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail="Only Post Owners can delete their posts.")
-    post_query.update(post.model_dump(), synchronize_session=False)
+    post_query.update(updated_post.model_dump(), synchronize_session=False)
     db.commit()
     db_post = post_query.first()
     return db_post
