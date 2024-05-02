@@ -58,6 +58,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/fastapi-blog:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
